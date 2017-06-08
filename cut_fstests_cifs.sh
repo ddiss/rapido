@@ -28,6 +28,7 @@ dracut  --install "tail blockdev ps rmdir resize dd vim grep find df sha256sum \
 		   fstrim fio logger dmsetup chattr lsattr cmp stat \
 		   dbench /usr/share/dbench/client.txt getconf md5sum od wc \
 		   getfacl setfacl tr xargs sysctl link truncate quota \
+		   repquota setquota xfs_mkfile chgrp du \
 		   $LIBS_INSTALL_LIST" \
 	--include "$FSTESTS_SRC" "/fstests" \
 	--include "$RAPIDO_DIR/fstests_cifs_autorun.sh" "/.profile" \
