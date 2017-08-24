@@ -17,7 +17,8 @@ RAPIDO_DIR="$(realpath -e ${0%/*})"
 
 _rt_require_ceph
 _rt_require_dracut_args
-_rt_require_lib "libkeyutils.so.1 libfuse.so libcryptopp-5.6.2.so.0 libhandle.so.1 libssl.so.1"
+_rt_require_lib_deps "$CEPH_FUSE_BIN"
+_rt_require_lib "libfreeblpriv3.so libsoftokn3.so"
 
 "$DRACUT" --install "tail blockdev ps rmdir resize dd vim grep find df sha256sum \
 		   strace mkfs mkfs.xfs \
