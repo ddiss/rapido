@@ -41,6 +41,17 @@ if [ $? -ne 0 ]; then
 fi
 
 modprobe target_core_mod || _fatal
+
+# state for APTPL PRs
+mkdir -p \
+/var/run/lio/loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong/looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong/pr
+
+sn_pfx="this-SCSI-serial-number-is-very-very-long-and-should-be-truncated-by-snprintf-in-__core_scsi3_write_aptpl_to_file-when-it-generates-the-persistent-reservation-state-state-path-under-db_root"
+
+echo \
+/var/run/lio/loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong/looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong \
+	> /sys/kernel/config/target/dbroot
+
 modprobe target_core_iblock || _fatal
 modprobe target_core_file || _fatal
 modprobe iscsi_target_mod || _fatal
@@ -55,6 +66,7 @@ done
 [ -d /sys/kernel/config/target/iscsi ] \
 	|| mkdir /sys/kernel/config/target/iscsi || _fatal
 
+
 #### iSCSI Discovery authentication information
 echo -n 0 > /sys/kernel/config/target/iscsi/discovery_auth/enforce_discovery_auth
 
@@ -67,7 +79,7 @@ echo "fd_dev_name=${file_path}" \
 	> /sys/kernel/config/target/core/fileio_0/filer/control || _fatal
 echo "fd_dev_size=${file_size_b}" \
 	> /sys/kernel/config/target/core/fileio_0/filer/control || _fatal
-echo "$file_path" \
+echo "${sn_pfx}-file" \
 	> /sys/kernel/config/target/core/fileio_0/filer/wwn/vpd_unit_serial \
 	|| _fatal
 echo "1" > /sys/kernel/config/target/core/fileio_0/filer/enable || _fatal
@@ -90,9 +102,10 @@ dmdelay_dev="/dev/dm-0"
 mkdir -p /sys/kernel/config/target/core/iblock_0/delayer || _fatal
 echo "udev_path=${dmdelay_dev}" \
 	> /sys/kernel/config/target/core/iblock_0/delayer/control || _fatal
-echo "$dmdelay_dev" \
+echo "${sn_pfx}-block" \
 	> /sys/kernel/config/target/core/iblock_0/delayer/wwn/vpd_unit_serial \
 	|| _fatal
+cat /sys/kernel/config/target/core/iblock_0/delayer/wwn/vpd_unit_serial
 echo "1" > /sys/kernel/config/target/core/iblock_0/delayer/enable || _fatal
 
 #### iblock backstores - only if "vda" block device attached
