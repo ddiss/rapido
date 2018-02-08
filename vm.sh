@@ -44,7 +44,8 @@ function _vm_start
 	# moving to a VM${vm_num}_MAC_ADDR or ini style config would make sense
 	local qemu_netdev=""
 	local kern_ip_addr=""
-	if [ -n "$(_rt_xattr_vm_networkless_get ${DRACUT_OUT})" ]; then
+	local vm_networkless="$(_rt_xattr_vm_networkless_get ${DRACUT_OUT})"
+	if [ "$vm_networkless" == "1" ]; then
 		# this image doesn't require network access
 		kern_ip_addr="none"
 		qemu_netdev="-net none"	# override default (-net nic -net user)
@@ -53,20 +54,25 @@ function _vm_start
 		eval local tap='$TAP_DEV'$((vm_num - 1))
 		[ -n "$tap" ] \
 			|| _fail "TAP_DEV$((vm_num - 1)) not configured"
-		eval local is_dhcp='$IP_ADDR'${vm_num}'_DHCP'
-		if [ "$is_dhcp" = "1" ]; then
-			kern_ip_addr="dhcp"
-		else
-			eval local hostname='$HOSTNAME'${vm_num}
-			[ -n "$hostname" ] \
-				|| _fail "HOSTNAME${vm_num} not configured"
-			eval local ip_addr='$IP_ADDR'${vm_num}
-			[ -n "$ip_addr" ] \
-				|| _fail "IP_ADDR${vm_num} not configured"
-			kern_ip_addr="${ip_addr}:::255.255.255.0:${hostname}"
-		fi
+
 		qemu_netdev="-device e1000,netdev=nw1,mac=${mac_addr} \
 			-netdev tap,id=nw1,script=no,downscript=no,ifname=${tap}"
+		if [ "$vm_networkless" == "user" ]; then
+			kern_ip_addr="none"
+		else
+			eval local is_dhcp='$IP_ADDR'${vm_num}'_DHCP'
+			if [ "$is_dhcp" = "1" ]; then
+				kern_ip_addr="dhcp"
+			else
+				eval local hostname='$HOSTNAME'${vm_num}
+				[ -n "$hostname" ] \
+					|| _fail "HOSTNAME${vm_num} not configured"
+				eval local ip_addr='$IP_ADDR'${vm_num}
+				[ -n "$ip_addr" ] \
+					|| _fail "IP_ADDR${vm_num} not configured"
+				kern_ip_addr="${ip_addr}:::255.255.255.0:${hostname}"
+			fi
+		fi
 	fi
 
 	# cut_ script may have specified some parameters for qemu (9p share)
