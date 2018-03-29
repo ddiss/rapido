@@ -200,3 +200,10 @@ INITIATOR_IQNS="iqn.2007-10.com.github:sahlberg:libiscsi:iscsi-test \
 # e.g. SAMBA_SRC="/home/me/samba"
 #SAMBA_SRC=""
 #################################
+
+######### cut_smbdirect.sh ########
+# SMBDIRECT_SRC should correspond to a checkout and build of the out-of-tree
+# and *experimental* smbdirect kernel module and user space helper.
+# e.g. SMBDIRECT_SRC="/home/me/smbdirect"
+#SMBDIRECT_SRC=""
+#################################
