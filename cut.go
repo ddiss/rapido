@@ -17,6 +17,7 @@ import (
 	"log"
 	"fmt"
 	"os"
+	"strings"
 	"io/ioutil"
 	"path"
 	"path/filepath"
@@ -150,6 +151,22 @@ type cliParams struct {
 	debug bool
 	confPath string
 	imgPath string
+	confOverlay map[string]string
+}
+
+// string "get" callback for -C <key>=<val>. Not sure what to return.
+func (params *cliParams) String() string {
+	return ""
+}
+
+// "set" callback for -C <key>=<val>
+func (params *cliParams) Set(value string) error {
+	kv := strings.Split(value, "=")
+	if len(kv) != 2 {
+		return fmt.Errorf("not in <KEY>=<val> format\n", value)
+	}
+	params.confOverlay[kv[0]] = kv[1]
+	return nil
 }
 
 func main() {
@@ -165,9 +182,12 @@ func main() {
 	flag.BoolVar(&params.debug, "debug", false, "log debug messages")
 	flag.StringVar(&params.confPath, "conf", path.Join(rdir, "rapido.conf"),
 		       "rapido.conf path")
+	params.confOverlay = make(map[string]string)
 	flag.StringVar(&params.imgPath, "img",
 		       path.Join(rdir, "imgs", "rapido-img.cpio"),
 		       "initramfs image path")
+	flag.Var(params, "C",
+	     "<KEY>=<val> overlay for rapido.conf. Can be given multiple times")
 
 	flag.Parse()
 
@@ -190,7 +210,8 @@ func main() {
 		return
 	}
 
-	conf, err := rapido.ParseConf(params.confPath, params.debug)
+	conf, err := rapido.ParseConf(params.confPath, params.confOverlay,
+				      params.debug)
 	if err != nil {
 		log.Fatalf("failed to parse config: %v", err)
 	}

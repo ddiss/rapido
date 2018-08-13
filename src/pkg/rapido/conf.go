@@ -55,7 +55,8 @@ func parseConfExpand(f map[string]string) error {
 }
 
 // Parse confPath as an ini/shell env and return the resulting RapidoConf struct
-func ParseConf(confPath string, debug bool) (*RapidoConf, error) {
+func ParseConf(confPath string, overlay map[string]string,
+	       debug bool) (*RapidoConf, error) {
 	// TODO set RapidoConfFile defaults
 	conf := new(RapidoConf)
 
@@ -77,6 +78,10 @@ func ParseConf(confPath string, debug bool) (*RapidoConf, error) {
 	err = parseConfExpand(conf.f)
 	if err != nil {
 		return nil, err
+	}
+
+	for k, v := range overlay {
+		conf.f[k] = v
 	}
 
 	conf.Debug = debug
