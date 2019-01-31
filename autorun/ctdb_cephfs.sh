@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) SUSE LINUX GmbH 2018, all rights reserved.
+# Copyright (C) SUSE LINUX GmbH 2018-2019, all rights reserved.
 #
 # This library is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as published
@@ -69,6 +69,8 @@ for es in $(find "$ctdb_events_dir"); do
 	case "${es##*/}" in
 		"00.ctdb"|"00.ctdb.script")
 			chmod 755 "$es" ;;
+		"10.interface"|"10.interface.script")
+			chmod 755 "$es" ;;
 		*)
 			chmod 644 "$es" ;;
 	esac
@@ -113,8 +115,17 @@ cat > /usr/local/samba/etc/ctdb/ctdb.conf << EOF
     recovery lock = !${reclock_bin} ceph $reclock_usr $reclock_pool $reclock_obj
 EOF
 
+
+# add rapido IPs as private cluster IPs to the nodes file
+# XXX we have to use IPs on the same network as the rados recovery lock, which
+# is obtained by ctdb during startup before public IPs have been assigned.
+[ -n "$IP_ADDR1" ] && [ -n "$IP_ADDR2" ] || _fatal "IP_ADDR misconfigured"
 echo $IP_ADDR1 >> /usr/local/samba/etc/ctdb/nodes
 echo $IP_ADDR2 >> /usr/local/samba/etc/ctdb/nodes
+
+# add a pool of "public" addresses to be assigned across all ctdb cluster nodes
+echo "10.10.50.1/24 eth0" >> /usr/local/samba/etc/ctdb/public_addresses
+echo "10.10.50.2/24 eth0" >> /usr/local/samba/etc/ctdb/public_addresses
 
 ctdbd || _fatal
 
@@ -137,12 +148,10 @@ smbd || _fatal
 echo -e "${CIFS_PW}\n${CIFS_PW}\n" \
 	| smbpasswd -a $CIFS_USER -s || _fatal
 
-ip link show eth0 | grep $MAC_ADDR1 &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "Samba share ready at: //${IP_ADDR1}/${CIFS_SHARE}/"
-fi
-ip link show eth0 | grep $MAC_ADDR2 &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "Samba share ready at: //${IP_ADDR2}/${CIFS_SHARE}/"
-fi
-echo "Logs at /usr/local/samba/var/log/log.ctdb & /usr/local/samba/var/log.smbd"
+cat << EOF
+Samba share ready at:
+	//10.10.50.1/${CIFS_SHARE}
+	//10.10.50.2/${CIFS_SHARE}
+
+Logs at /usr/local/samba/var/log/log.ctdb & /usr/local/samba/var/log.smbd
+EOF
