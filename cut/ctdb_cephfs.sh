@@ -54,6 +54,7 @@ fi
 		   ${SAMBA_SRC}/bin/ctdb_recovery_helper \
 		   ${SAMBA_SRC}/bin/ctdb_takeover_helper \
 		   ${SAMBA_SRC}/bin/ctdb_mutex_ceph_rados_helper \
+		   ${SAMBA_SRC}/bin/smbwitness \
 		   $LIBS_INSTALL_LIST" \
 	--include "$CTDB_EVENTS_DIR" "$CTDB_EVENTS_DIR" \
 	--include "${SAMBA_SRC}/ctdb/config/functions" \

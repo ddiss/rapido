@@ -76,15 +76,24 @@ for es in $(find "$ctdb_events_dir"); do
 	esac
 done
 
-# echo "CTDB=\"${SAMBA_SRC}/bin/default/ctdb/ctdb\"" > /etc/sysconfig/ctdb || _fatal
-
 cat > /usr/local/samba/etc/smb.conf << EOF
 [global]
 	workgroup = MYGROUP
 	clustering = yes
 	load printers = no
 	smbd: backgroundqueue = no
+EOF
 
+if [ -x ${SAMBA_SRC}/bin/smbwitness ]; then
+	cat >> /usr/local/samba/etc/smb.conf << EOF
+	rpc_daemon: epmd = fork
+	rpc_server: epmapper = external
+	rpc_daemon: witnessd = fork
+	rpc_server: witness = external
+EOF
+fi
+
+cat >> /usr/local/samba/etc/smb.conf << EOF
 [${CIFS_SHARE}]
 	path = /
 	vfs objects = ceph
