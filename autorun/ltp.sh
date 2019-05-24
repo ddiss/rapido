@@ -20,17 +20,20 @@ fi
 
 . /vm_autorun.env
 
-LTP_DIR="/opt/ltp"
-[ -d "$LTP_DIR" ] || _fatal "LTP missing"
-
 _vm_ar_dyn_debug_enable
 
 set -x
 
-echo "running LTP Test $LTP_AUTORUN_CMD" 
-#
-if [ -n "$LTP_AUTORUN_CMD" ]; then
-        cd ${LTP_DIR} || _fatal
-        eval "$LTP_AUTORUN_CMD"
-fi
+# ltp requires a few preexisting users/groups
+xid="2000"
+for ug in nobody bin daemon; do
+	echo "${ug}:x:${xid}:${xid}:${ug} user:/:/sbin/nologin" >> /etc/passwd
+	echo "${ug}:x:${xid}:" >> /etc/group
+	((xid++))
+done
 
+cd ${LTP_DIR} || _fatal
+if [ -n "$LTP_AUTORUN_CMD" ]; then
+	echo "Running LTP Command: $LTP_AUTORUN_CMD"
+	eval "$LTP_AUTORUN_CMD"
+fi
