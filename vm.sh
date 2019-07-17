@@ -78,9 +78,9 @@ function _vm_start
 
 	# rapido.conf might have specified a shared folder for qemu
 	local virtfs_share=""
-	if [ -n "$VIRTFS_FOLDER" ]; then
+	if [ -n "$VIRTFS_SHARE_PATH" ]; then
 		virtfs_share="-virtfs \
-		local,path=$VIRTFS_FOLDER,mount_tag=host0,security_model=mapped,id=host0"
+		local,path=${VIRTFS_SHARE_PATH},mount_tag=host0,security_model=mapped,id=host0"
 	fi
 
 	[ -f "$kernel_img" ] \
