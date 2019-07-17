@@ -28,7 +28,7 @@ _rt_require_lib "libsoftokn3.so \
 
 "$DRACUT" --install "tail ps rmdir resize dd vim grep find df sha256sum \
 		   strace stat truncate touch cut chmod fio getfattr setfattr \
-		   chacl attr killall sync dirname seq ip ping \
+		   getfacl setfacl attr killall sync dirname seq ip ping \
 		   $CEPH_FUSE_BIN \
 		   $LIBS_INSTALL_LIST" \
 	--include "$CEPH_CONF" "/etc/ceph/ceph.conf" \
@@ -36,6 +36,7 @@ _rt_require_lib "libsoftokn3.so \
 	--include "$RAPIDO_DIR/autorun/cephfs_fuse.sh" "/.profile" \
 	--include "$RAPIDO_DIR/rapido.conf" "/rapido.conf" \
 	--include "$RAPIDO_DIR/vm_autorun.env" "/vm_autorun.env" \
+	--include "$RAPIDO_DIR/../src/ksudo" "/ksudo" \
 	--include "$vm_ceph_conf" "/vm_ceph.env" \
 	--add-drivers "fuse" \
 	--modules "bash base" \

@@ -24,8 +24,23 @@ set -x
 
 _vm_ar_dyn_debug_enable
 
+cat >>/etc/passwd << EOF
+ddiss:x:1000:100:David:/var/lib/nobody:/bin/bash
+EOF
+
 mkdir -p /mnt/cephfs
 mount -t ceph ${CEPH_MON_ADDRESS_V1}:/ /mnt/cephfs \
 	-o name=${CEPH_USER},secret=${CEPH_USER_KEY} || _fatal
 cd /mnt/cephfs || _fatal
+
+echo "precious data" > data
+chown 0:0 data || _fatal
+chmod 600 data || _fatal
+setfacl -m g:486:r data
+
+echo "no access via sup gid, should fail..."
+/ksudo 1000:100 cat data
+echo "permitted via sup gid, should pass..."
+/ksudo 1000:100:486 cat data
+
 set +x

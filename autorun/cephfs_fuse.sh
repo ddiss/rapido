@@ -29,9 +29,25 @@ _vm_ar_dyn_debug_enable
 sed -i "s#keyring = .*#keyring = /etc/ceph/keyring#g; \
 	s#admin socket = .*##g; \
 	s#run dir = .*#run dir = /var/run/#g; \
-	s#log file = .*#log file = /var/log/\$name.\$pid.log#g" \
+	s#log file = .*#log file = /var/log/\$name.\$pid.log#g; \
+	s#\[client\]#[client]\nclient_acl_type = posix_acl#g; \
+	s#\[client\]#[client]\nfuse_default_permissions = false#g" \
 	/etc/ceph/ceph.conf
 mkdir -p /mnt/cephfs
 $CEPH_FUSE_BIN /mnt/cephfs || _fatal
 cd /mnt/cephfs || _fatal
+
+cat >>/etc/passwd << EOF
+ddiss:x:1000:100:David:/var/lib/nobody:/bin/bash
+EOF
+echo "precious data" > data
+chown 0:0 data || _fatal
+chmod 600 data || _fatal
+setfacl -m g:486:r data
+
+echo "no access via sup gid, should fail..."
+/ksudo 1000:100 cat data
+echo "permitted via sup gid, should pass..."
+/ksudo 1000:100:486 cat data
+
 set +x
