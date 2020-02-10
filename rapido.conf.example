@@ -254,3 +254,25 @@ INITIATOR_IQNS="iqn.2007-10.com.github:sahlberg:libiscsi:iscsi-test \
 # NVMe over TCP target details used for mapping
 #NVME_TARGET_TCP="$IP_ADDR1"
 ###############################################
+
+## wireguard_server.sh & wireguard_client.sh ##
+# path to compiled wireguard-tools source
+#WIREGUARD_SRC="/home/ddiss/isms/wireguard-tools/"
+# private key string for server
+#WIREGUARD_SRV_PRIVKEY=""
+# public key string for server, to share with client
+#WIREGUARD_SRV_PUBKEY=""
+# IP address for wireguard wg0 interface on server
+#WIREGUARD_SRV_TUN_ADDR="10.30.50.1/24"
+# IP address and port for wireguard server endpoint
+#WIREGUARD_SRV_EP_IP=""
+#WIREGUARD_SRV_EP_PORT="51820"
+# private key string for client
+#WIREGUARD_CLI_PRIVKEY=""
+# public key string for client, to share with server
+#WIREGUARD_CLI_PUBKEY=""
+# IP address for wireguard wg0 interface on client
+#WIREGUARD_CLI_TUN_ADDR="10.30.50.2/24"
+# IP address and port for wireguard client endpoint
+#WIREGUARD_CLI_EP_PORT="47892"
+###############################################
