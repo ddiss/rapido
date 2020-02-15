@@ -19,7 +19,7 @@ _rt_require_dracut_args
 _rt_require_conf_dir WIREGUARD_SRC
 
 "$DRACUT" \
-	--install "grep ps dd mkfs.xfs ip ping nc ss \
+	--install "resize strace grep ps dd mkfs.xfs ip ping nc ss \
 		   ${WIREGUARD_SRC}/src/wg" \
 	--include "${RAPIDO_DIR}/autorun/wireguard_server.sh" "/.profile" \
 	--include "${RAPIDO_DIR}/rapido.conf" "/rapido.conf" \
