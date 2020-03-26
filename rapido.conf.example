@@ -267,3 +267,8 @@ INITIATOR_IQNS="iqn.2007-10.com.github:sahlberg:libiscsi:iscsi-test \
 # NVMe over TCP target details used for mapping
 #NVME_TARGET_TCP="$IP_ADDR1"
 ###############################################
+
+######## dmcrypt #########
+# CRYPTSETUP_SRC should correspond to a checkout and build of cryptsetup
+#CRYPTSETUP_SRC=""
+##########################
