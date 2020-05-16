@@ -26,8 +26,13 @@ _rt_require_conf_dir SAMBA_SRC
 _rt_require_lib "libssl3.so libsmime3.so libstdc++.so.6 libsoftokn3.so \
 		 libfreeblpriv3.so"	# NSS_InitContext() fails without
 
+gdb_rpms="python3 python3-base gdb"
+gdb_files="$(rpm -ql $gdb_rpms)" || _fail "missing rpm(s) in: $gdb_rpms"
+# filter out unneeded pyc & doc files
+gdb_files=$(echo "$gdb_files" | grep -v -e "\.pyc$" -e "/doc/" -e "/man/")
+
 "$DRACUT" --install "tail ps rmdir resize dd vim grep find df sha256sum \
-		   which touch cut chmod true false seq \
+		   which touch cut chmod true false seq $gdb_files \
 		   getfattr setfattr chacl attr killall sync \
 		   id sort uniq date expr tac diff head dirname ss ip ping \
 		   ${SAMBA_SRC}/bin/smbpasswd \
