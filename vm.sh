@@ -75,11 +75,15 @@ function _vm_start
 	local vm_resources="$(_rt_xattr_vm_resources_get ${DRACUT_OUT})"
 	[ -n "$vm_resources" ] || vm_resources="-smp cpus=2 -m 512"
 
+	local virtfs_src="path=${KERNEL_INSTALL_MOD_PATH}/lib/modules"
+	local virtfs_share="-virtfs \
+		local,${virtfs_src},mount_tag=kmod,security_model=none,readonly"
 	# rapido.conf might have specified a shared folder for qemu
 	local virtfs_share=""
 	if [ -n "$VIRTFS_SHARE_PATH" ]; then
-		virtfs_share="-virtfs \
-		local,path=${VIRTFS_SHARE_PATH},mount_tag=host0,security_model=mapped,id=host0"
+		virtfs_src="path=${VIRTFS_SHARE_PATH}"
+		virtfs_share="$virtfs_share -virtfs \
+		local,${virtfs_src},mount_tag=host0,security_model=mapped,id=host0"
 	fi
 
 	$QEMU_BIN \
