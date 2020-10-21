@@ -82,12 +82,13 @@ function _vm_start
 		local,path=${VIRTFS_SHARE_PATH},mount_tag=host0,security_model=mapped,id=host0"
 	fi
 
+	# -append "rapido.vm_num=${vm_num} ip=${kern_ip_addr} \
 	$QEMU_BIN \
 		$QEMU_ARCH_VARS \
 		$vm_resources \
 		-kernel "$QEMU_KERNEL_IMG" \
 		-initrd "$DRACUT_OUT" \
-		-append "rapido.vm_num=${vm_num} ip=${kern_ip_addr} \
+		-append "rapido.vm_num=${vm_num} \
 			 rd.systemd.unit=emergency.target \
 		         rd.shell=1 console=$QEMU_KERNEL_CONSOLE rd.lvm=0 rd.luks=0 \
 			 $QEMU_EXTRA_KERNEL_PARAMS" \
