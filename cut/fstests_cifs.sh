@@ -19,7 +19,7 @@ _rt_require_dracut_args "$RAPIDO_DIR/autorun/fstests_cifs.sh" "$@"
 _rt_require_fstests
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace mkfs mount.cifs free \
 		which perl awk bc touch cut chmod true false unlink \
 		mktemp getfattr setfattr chacl attr killall hexdump sync \

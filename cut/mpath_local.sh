@@ -29,7 +29,7 @@ _rt_require_dracut_args_networkless "$RAPIDO_DIR/autorun/mpath_local.sh" "$@"
 # (ctrl-a c) and running "drive_del hda"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace mkfs mkfs.xfs parted partprobe sgdisk hdparm \
 		timeout id chown chmod env killall getopt basename" \
 	$DRACUT_RAPIDO_INCLUDES \

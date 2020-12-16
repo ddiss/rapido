@@ -19,7 +19,7 @@ _rt_require_dracut_args "$RAPIDO_DIR/autorun/dropbear.sh" "$@"
 _rt_require_lib "libkeyutils.so.1"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace mkfs.xfs dropbear chmod ip ping \
 		$LIBS_INSTALL_LIST" \
 	$DRACUT_RAPIDO_INCLUDES \

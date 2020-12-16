@@ -37,7 +37,7 @@ rados_cython="${CEPH_SRC}"/build/lib/cython_modules/lib.3/rados.cpython-34m.so
 
 # ldconfig needed by pyudev ctypes.util.find_library
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df \
+		tail blockdev ps rmdir dd vim grep find df \
 		$py3_files env ldconfig ip ping \
 		dbus-daemon /etc/dbus-1/system.conf $rbd_bin $rados_cython \
 		$LIBS_INSTALL_LIST" \

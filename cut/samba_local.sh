@@ -19,7 +19,7 @@ _rt_require_dracut_args "$RAPIDO_DIR/autorun/samba_local.sh" "$@"
 _rt_require_conf_dir SAMBA_SRC
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail ps rmdir resize dd vim grep find df sha256sum \
+		tail ps rmdir dd vim grep find df sha256sum \
 		strace mkfs mkfs.btrfs mkfs.xfs \
 		stat which touch cut chmod true false \
 		getfattr setfattr getfacl setfacl killall sync \

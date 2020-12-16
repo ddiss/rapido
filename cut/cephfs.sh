@@ -24,7 +24,7 @@ _rt_write_ceph_config $vm_ceph_conf
 _rt_require_dracut_args "$vm_ceph_conf" "$RAPIDO_DIR/autorun/cephfs.sh" "$@"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace stat which touch cut chmod true false \
 		getfattr setfattr getfacl setfacl killall sync \
 		id sort uniq date expr tac diff head dirname seq ip ping" \

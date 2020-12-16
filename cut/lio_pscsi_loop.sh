@@ -23,7 +23,7 @@ _rt_require_dracut_args_networkless "${RAPIDO_DIR}/autorun/lio_pscsi_loop.sh" "$
 #   -device scsi-hd,drive=hda"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		mkfs mkfs.xfs parted partprobe sgdisk hdparm uuidgen \
 		env lsscsi awk" \
 	$DRACUT_RAPIDO_INCLUDES \

@@ -22,7 +22,7 @@ _rt_require_ceph
 _rt_require_lib "libsoftokn3.so libfreeblpriv3.so"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace mkfs.xfs mkfs.btrfs sync dirname uuidgen ip ping \
 		${CEPH_SRC}/build/lib/librbd.so \
 		${CEPH_SRC}/build/lib/libceph-common.so \

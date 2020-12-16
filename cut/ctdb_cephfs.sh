@@ -33,7 +33,7 @@ _rt_require_lib "libssl3.so libsmime3.so libstdc++.so.6 libsoftokn3.so \
 # - config/events.d -> config/events
 # - ctdb-config & ctdb-path -> new binaries
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df sha256sum \
+		tail blockdev ps rmdir dd vim grep find df sha256sum \
 		strace xargs timeout \
 		which perl awk bc touch cut chmod true false \
 		getfattr setfattr chacl attr killall sync \

@@ -18,7 +18,7 @@ RAPIDO_DIR="$(realpath -e ${0%/*})/.."
 _rt_require_dracut_args "$RAPIDO_DIR/autorun/cifs.sh" "$@"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail ps rmdir resize dd vim grep find df \
+		tail ps rmdir dd vim grep find df \
 		mount.cifs ip ping getfacl setfacl truncate du \
 		which touch cut chmod true false unlink \
 		getfattr setfattr chacl attr killall sync \

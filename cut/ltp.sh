@@ -20,7 +20,7 @@ _rt_require_conf_dir LTP_DIR
 
 "$DRACUT" \
 	--install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd grep find df mkfs which \
+		tail blockdev ps rmdir dd grep find df mkfs which \
 		perl awk bc touch cut chmod true false unlink mktemp getfattr \
 		setfattr attr killall hexdump sync id sort uniq date expr tac \
 		diff head dirname seq basename tee egrep yes dmsetup chattr \

@@ -18,7 +18,7 @@ RAPIDO_DIR="$(realpath -e ${0%/*})/.."
 _rt_require_dracut_args "$RAPIDO_DIR/autorun/lio_local.sh" "$@"
 
 "$DRACUT" --install "$DRACUT_RAPIDO_INSTALLS \
-		tail blockdev ps rmdir resize dd vim grep find df \
+		tail blockdev ps rmdir dd vim grep find df \
 		sha256sum strace mkfs.xfs truncate losetup dmsetup \
 		/usr/lib/udev/rules.d/95-dm-notify.rules ip ping" \
 	$DRACUT_RAPIDO_INCLUDES \
