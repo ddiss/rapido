@@ -17,7 +17,6 @@ _vm_ar_env_check || exit 1
 set -x
 
 filesystem="btrfs"
-export PATH="${SAMBA_SRC}/bin/:${PATH}"
 
 # use a non-configurable UID/GID for now
 cifs_xid="579120"
@@ -37,19 +36,15 @@ mkdir -p /mnt/
 mount -t $filesystem /dev/zram0 /mnt/ || _fatal
 chmod 777 /mnt/ || _fatal
 
-mkdir -p /usr/local/samba/var/
-mkdir -p /usr/local/samba/etc/
-mkdir -p /usr/local/samba/var/lock
-mkdir -p /usr/local/samba/private/
-mkdir -p /usr/local/samba/lib/
-ln -s ${SAMBA_SRC}/bin/modules/vfs/ /usr/local/samba/lib/vfs
+[ -n "$SAMBA_SRC" ] && export PATH="${SAMBA_SRC}/bin/:${PATH}"
 
+cfg_file="/smb.conf"
 smb_conf_vfs=""
 if [ "$filesystem" == "btrfs" ]; then
 	smb_conf_vfs='vfs objects = btrfs'
 fi
 
-cat > /usr/local/samba/etc/smb.conf << EOF
+cat > "$cfg_file" << EOF
 [global]
 	workgroup = MYGROUP
 	load printers = no
@@ -62,12 +57,20 @@ cat > /usr/local/samba/etc/smb.conf << EOF
 	store dos attributes = yes
 EOF
 
-smbd || _fatal
+log_base=$(smbd -b -s "$cfg_file" | awk '/LOGFILEBASE:/ { print $2 }')
+cfg_dirs=$(smbd -b -s "$cfg_file" | awk '/DIR:/ { printf "%s ",$2 }')
+mkdir -p "$log_base" $cfg_dirs
+
+[ -n "$SAMBA_SRC" ] \
+	&& ln -s ${SAMBA_SRC}/bin/modules/vfs/ \
+	   $(smbd -b -s "$cfg_file" | awk '/MODULESDIR:/ {printf "%s/vfs", $2}')
+
+smbd -s "$cfg_file" || _fatal
 
 set +x
 
 echo -e "${CIFS_PW}\n${CIFS_PW}\n" \
-	| smbpasswd -a $CIFS_USER -s || _fatal
+	| smbpasswd -c "$cfg_file" -a $CIFS_USER -s || _fatal
 
 ip link show eth0 | grep $MAC_ADDR1 &> /dev/null
 if [ $? -eq 0 ]; then
@@ -77,4 +80,4 @@ ip link show eth0 | grep $MAC_ADDR2 &> /dev/null
 if [ $? -eq 0 ]; then
 	echo "Samba share ready at: //${IP_ADDR2}/${CIFS_SHARE}/"
 fi
-echo "Log at: /usr/local/samba/var/log.smbd"
+echo "Log at: ${log_base}/log.smbd"
