@@ -44,7 +44,7 @@ function _vm_start
 	# XXX rapido.conf VM parameters are pretty inconsistent and confusing
 	# moving to a VM${vm_num}_MAC_ADDR or ini style config would make sense
 	local qemu_netdev=""
-	if [ -n "$(_rt_xattr_vm_networkless_get ${DRACUT_OUT})" ]; then
+	if [ -z "$(_rt_cpio_has "${DRACUT_OUT}" "*/systemd-networkd")" ]; then
 		# this image doesn't require network access
 		qemu_netdev="-net none"	# override default (-net nic -net user)
 		kern_net="rapido.networkless"
