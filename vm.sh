@@ -1,24 +1,13 @@
 #!/bin/bash
-#
-# Copyright (C) SUSE LINUX GmbH 2016, all rights reserved.
-#
-# This library is free software; you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License as published
-# by the Free Software Foundation; either version 2.1 of the License, or
-# (at your option) version 3.
-#
-# This library is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-# License for more details.
+# SPDX-License-Identifier: (LGPL-2.1 OR LGPL-3.0)
+# Copyright (C) SUSE LLC 2016-2022, all rights reserved.
 
 RAPIDO_DIR="`dirname $0`"
 . "${RAPIDO_DIR}/runtime.vars"
 
 _rt_require_qemu_args
 
-function _vm_is_running
-{
+_vm_is_running() {
 	local vm_num=$1
 	local vm_pid_file="${RAPIDO_DIR}/initrds/rapido_vm${vm_num}.pid"
 
@@ -27,18 +16,21 @@ function _vm_is_running
 	ps -p "$(head -n1 $vm_pid_file)" > /dev/null && echo "1"
 }
 
-function _vm_start
-{
+_vm_start() {
 	local vm_num=$1
 	local vm_pid_file="${RAPIDO_DIR}/initrds/rapido_vm${vm_num}.pid"
 	local vm_num_kparam="rapido.vm_num=${vm_num}"
-	local netd_mach_id kern_net i vm_tap tap_mac n
+	local netd_mach_id kern_net i vm_tap tap_mac n netd_flag
 	local qemu_netdev=()
+	local vm_resources=()
 
 	[ -f "$DRACUT_OUT" ] \
 	   || _fail "no initramfs image at ${DRACUT_OUT}. Run \"cut_X\" script?"
 
-	if [ -z "$(_rt_cpio_has "${DRACUT_OUT}" "*/systemd-networkd")" ]; then
+	_rt_qemu_resources_get "${DRACUT_OUT}" vm_resources netd_flag \
+		|| _fail "failed to get qemu resource parameters"
+
+	if [ -z "$netd_flag" ]; then
 		# this image doesn't require network access
 		qemu_netdev+=(-net none) # override default (-net nic -net user)
 		kern_net="rapido.networkless"
@@ -72,23 +64,15 @@ function _vm_start
 		done
 	fi
 
-	# cut_ script may have specified some parameters for qemu
-	local qemu_cut_args="$(_rt_xattr_qemu_args_get ${DRACUT_OUT})"
-	local qemu_more_args="$QEMU_EXTRA_ARGS $qemu_cut_args"
-
-	local vm_resources="$(_rt_xattr_vm_resources_get ${DRACUT_OUT})"
-	[ -n "$vm_resources" ] || vm_resources="-smp cpus=2 -m 512"
-
 	# rapido.conf might have specified a shared folder for qemu
-	local virtfs_share=""
 	if [ -n "$VIRTFS_SHARE_PATH" ]; then
-		virtfs_share="-virtfs \
-		local,path=${VIRTFS_SHARE_PATH},mount_tag=host0,security_model=mapped,id=host0"
+		vm_resources+=(-virtfs
+			"local,path=${VIRTFS_SHARE_PATH},mount_tag=host0,security_model=mapped,id=host0")
 	fi
 
 	$QEMU_BIN \
 		$QEMU_ARCH_VARS \
-		$vm_resources \
+		"${vm_resources[@]}" \
 		-kernel "$QEMU_KERNEL_IMG" \
 		-initrd "$DRACUT_OUT" \
 		-append "$vm_num_kparam $kern_net \
@@ -96,9 +80,8 @@ function _vm_start
 		         rd.shell=1 console=$QEMU_KERNEL_CONSOLE rd.lvm=0 rd.luks=0 \
 			 $QEMU_EXTRA_KERNEL_PARAMS" \
 		-pidfile "$vm_pid_file" \
-		$virtfs_share \
 		"${qemu_netdev[@]}" \
-		$qemu_more_args
+		$QEMU_EXTRA_ARGS
 	exit $?
 }
 
