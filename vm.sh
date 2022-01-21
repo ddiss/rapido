@@ -56,10 +56,13 @@ _vm_start() {
 		for i in $(ls "${RAPIDO_DIR}/net-conf/vm${vm_num}"); do
 			[[ $i =~ ^(.*)\.network$ ]] || continue
 			vm_tap="${BASH_REMATCH[1]}"
-			# XXX we reuse the tap device's mac addres for the VM.
-			# this allows for simple [Match].MACAddress usage
-			tap_mac="$(cat "/sys/class/net/${vm_tap}/address")" \
-				|| _fail "failed to read ${vm_tap}/address"
+
+			# calculate a vNIC MAC based on the VM#
+			# and corresponding host tapdev name.
+			tap_mac=$(echo "vm${vm_num}.${vm_tap}" | md5sum | sed \
+			  's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/b8:\1:\2:\3:\4:\5/') \
+			  || _fail "failed to generate vm${vm_num}.${vm_tap} MAC"
+
 			# each entry is expected to match a corresponding tapdev
 			qemu_netdev+=(
 			  "-device"
