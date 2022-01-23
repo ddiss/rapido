@@ -24,7 +24,7 @@ _vm_start() {
 	local qemu_netdev=()
 	local vm_resources=()
 	local kcmdline=(rd.systemd.unit=emergency.target \
-		rd.shell=1 "console=$QEMU_KERNEL_CONSOLE" rd.lvm=0 rd.luks=0 \
+		rd.shell=1 "console=$QEMU_KERNEL_CONSOLE" \
 		$QEMU_EXTRA_KERNEL_PARAMS)
 
 	[ -f "$DRACUT_OUT" ] \
