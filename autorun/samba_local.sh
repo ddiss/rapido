@@ -34,7 +34,6 @@ mkfs.${filesystem} /dev/zram0 || _fatal "mkfs failed"
 
 mkdir -p /mnt/
 mount -t $filesystem /dev/zram0 /mnt/ || _fatal
-chmod 777 /mnt/ || _fatal
 
 [ -n "$SAMBA_SRC" ] && export PATH="${SAMBA_SRC}/bin/:${PATH}"
 
@@ -49,13 +48,19 @@ cat > "$cfg_file" << EOF
 	workgroup = MYGROUP
 	load printers = no
 	smbd: backgroundqueue = no
+EOF
 
-[${CIFS_SHARE}]
-	path = /mnt
+# enumerate a list of shares
+for i in $CIFS_SHARE; do
+	mkdir --mode=0777 /mnt/${i} || _fatal
+cat >> "$cfg_file" << EOF
+[${i}]
+	path = /mnt/${i}
 	$smb_conf_vfs
 	read only = no
 	store dos attributes = yes
 EOF
+done
 
 log_base=$(smbd -b -s "$cfg_file" | awk '/LOGFILEBASE:/ { print $2 }')
 cfg_dirs=$(smbd -b -s "$cfg_file" | awk '/DIR:/ { printf "%s ",$2 }')
