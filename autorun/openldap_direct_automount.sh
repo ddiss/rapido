@@ -114,12 +114,6 @@ dn: ou=auto.direct.smb,ou=automount,ou=admin,${ldap_dc_suffix}
 ou: auto.direct.smb
 objectClass: top
 objectClass: automountMap
-
-dn: cn=/smb/share,ou=auto.direct.smb,ou=automount,ou=admin,${ldap_dc_suffix}
-cn: /smb/share
-objectClass: top
-objectClass: automount
-automountInformation: $mount_args ://${CIFS_SERVER}/${CIFS_SHARE}
 EOF
 
 ldapadd -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
@@ -127,6 +121,24 @@ ldapadd -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
 
 ldapsearch -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
 	'(objectclass=*)' namingContexts || _fatal "ldapsearch failed"
+
+# add share maps one by one
+for share in $CIFS_SHARE; do
+	cat > /automount_map.ldif <<EOF
+dn: cn=/smb/${share},ou=auto.direct.smb,ou=automount,ou=admin,${ldap_dc_suffix}
+cn: /smb/${share}
+objectClass: top
+objectClass: automount
+automountInformation: $mount_args ://${CIFS_SERVER}/${share}
+EOF
+	ldapadd -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
+		-f /automount_map.ldif || _fatal "failed to add ldif data"
+
+	sleep 60
+done
+
+ldapsearch -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
+	'(objectclass=automount)' namingContexts || _fatal "ldapsearch failed"
 
 set +x
 
