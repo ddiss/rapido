@@ -93,6 +93,6 @@ ldapsearch -y "$ldap_pw_path" -x -D "cn=Manager,${ldap_dc_suffix}" \
 	'(objectclass=*)' namingContexts || _fatal "ldapsearch failed"
 
 automount --dumpmaps
-automount
+setsid --fork automount --debug --foreground
 
 set +x
