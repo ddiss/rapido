@@ -4,14 +4,14 @@ The scripts that make up Rapido are in themselves quite brainless. Most
 of the heavy lifting is instead performed by:
 
 * [Dracut](https://dracut.wiki.kernel.org):
-  * Generates a VM image, with kernel-modules and minimal user-space
+  Generates a VM image, with kernel-modules and minimal user-space
 * [QEMU](http://qemu.org):
-  * Boots a given Dracut VM image and compiled Linux kernel on the local
-    system
+  Boots a given Dracut VM image and compiled Linux kernel on the local
+  system
 * [systemd-networkd](https://www.freedesktop.org/wiki/Software/systemd/):
-  * Configures networking within Rapido VMs (optional)
+  Configures networking within Rapido VMs (optional)
 * [iproute2](https://wiki.linuxfoundation.org/networking/iproute2):
-  * Configures Bridge and TAP devices on the host (optional)
+  Configures Bridge and TAP devices on the host (optional)
 
 Dependencies are obtained from the local system; no magic images or
 internet downloads are necessary.
