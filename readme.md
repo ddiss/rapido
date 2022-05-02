@@ -1,5 +1,12 @@
 Rapido helps you quickly test Linux kernel changes.
 
+<details open>
+<summary>Demo</summary>
+
+![screen recording](docs/awesome_window_frame_powershell.svg)
+
+</details>
+
 The scripts that make up Rapido are in themselves quite brainless. Most
 of the heavy lifting is instead performed by:
 
