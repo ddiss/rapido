@@ -121,15 +121,13 @@
                 animation-name:roll;
                 animation-timing-function: steps(1,end);
                 animation-fill-mode: forwards;
+                animation-play-state: running;
+            }
+            #screen_view:hover {
+                animation-play-state: paused;
             }
         ]]></style>
         <style type="text/css" id="user-style">
-            svg > * {
-                animation-play-state: running;
-            }
-            svg:hover > * {
-                animation-play-state: paused;
-            }
             /* The colors defined below are the default 16 colors used for rendering text of the terminal. Adjust
                them as needed.
                PowerShell colors based on https://en.wikipedia.org/wiki/ANSI_escape_code#Colors */
