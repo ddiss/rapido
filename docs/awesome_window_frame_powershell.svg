@@ -16,7 +16,7 @@
         }
     
             :root {
-                --animation-duration: 27349ms;
+                --animation-duration: 15000ms;
             }
 
             @keyframes roll {
