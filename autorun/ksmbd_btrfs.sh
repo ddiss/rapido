@@ -27,7 +27,9 @@ echo "${CIFS_USER}:x:${cifs_xid}:" >> /etc/group
 echo "${FSTESTS_ZRAM_SIZE:-1G}" > /sys/block/zram0/disksize \
 	|| _fatal "failed to set zram disksize"
 mkfs.btrfs /dev/zram0 || _fatal "mkfs failed"
-mkdir -p /mnt/ /etc/ksmbd
+# ksmbd-tools may be built with a default prefix "/usr/local" or "/". There's
+# no easy way to find out, so account for both paths.
+mkdir -p /mnt/ /etc/ksmbd /usr/local/etc/ksmbd /usr/local/var/run/
 mount -t btrfs /dev/zram0 /mnt/ || _fatal
 chmod 777 /mnt/ || _fatal
 
