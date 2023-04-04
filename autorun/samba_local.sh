@@ -6,7 +6,8 @@ _vm_ar_env_check || exit 1
 
 set -x
 
-filesystem="btrfs"
+modprobe zram num_devices="1" || _fatal "failed to load zram module"
+_vm_ar_dyn_debug_enable
 
 # use a non-configurable UID/GID for now
 cifs_xid="579120"
@@ -14,24 +15,14 @@ echo "${CIFS_USER}:x:${cifs_xid}:${cifs_xid}:Samba user:/:/sbin/nologin" \
 	>> /etc/passwd
 echo "${CIFS_USER}:x:${cifs_xid}:" >> /etc/group
 
-modprobe zram num_devices="1" || _fatal "failed to load zram module"
-
-_vm_ar_dyn_debug_enable
-
-echo "1G" > /sys/block/zram0/disksize || _fatal "failed to set zram disksize"
-
-mkfs.${filesystem} /dev/zram0 || _fatal "mkfs failed"
-
+echo "${FSTESTS_ZRAM_SIZE:-1G}" > /sys/block/zram0/disksize \
+	|| _fatal "failed to set zram disksize"
+mkfs.btrfs /dev/zram0 || _fatal "mkfs failed"
 mkdir -p /mnt/
-mount -t $filesystem /dev/zram0 /mnt/ || _fatal
+mount -t btrfs /dev/zram0 /mnt/ || _fatal
 chmod 777 /mnt/ || _fatal
 
 cfg_file="/smb.conf"
-smb_conf_vfs=""
-if [ "$filesystem" == "btrfs" ]; then
-	smb_conf_vfs='vfs objects = btrfs'
-fi
-
 cat > "$cfg_file" << EOF
 [global]
 	workgroup = MYGROUP
@@ -40,7 +31,7 @@ cat > "$cfg_file" << EOF
 
 [${CIFS_SHARE}]
 	path = /mnt
-	$smb_conf_vfs
+	vfs objects = btrfs
 	read only = no
 	store dos attributes = yes
 EOF

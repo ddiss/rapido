@@ -19,7 +19,7 @@ _rt_mem_resources_set "1024M"
 		   getfattr setfattr getfacl setfacl killall sync \
 		   id sort uniq date expr tac diff head dirname seq \
 		   ${req_inst[*]}" \
-	--add-drivers "zram lzo lzo-rle xfs btrfs" \
+	--add-drivers "zram lzo btrfs lzo-rle" \
 	--modules "base" \
 	"${DRACUT_RAPIDO_ARGS[@]}" \
 	"$DRACUT_OUT" || _fail "dracut failed"
