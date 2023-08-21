@@ -1,5 +1,7 @@
 Rapido helps you quickly test Linux kernel changes.
 
+<img src="./docs/termtosvg.svg">
+
 ## Quick Start
 
 ```shell
