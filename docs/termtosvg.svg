@@ -408,34 +408,16 @@
 
             #screen_view {
                 animation-duration: 83326ms;
-                animation-iteration-count:infinite;
+                animation-iteration-count:1;
                 animation-name:roll;
                 animation-timing-function: steps(1,end);
                 animation-fill-mode: forwards;
             }
         ]]></style>
         <style type="text/css" id="user-style">
-            /* The colors defined below are the default 16 colors used for rendering text of the terminal. Adjust
-               them as needed.
-               gjm8 color theme (source: https://terminal.sexy/) */
             .foreground {fill: #c5c5c5;}
             .background {fill: #1c1c1c;}
-            .color0 {fill: #1c1c1c;}
             .color1 {fill: #ff005b;}
-            .color2 {fill: #cee318;}
-            .color3 {fill: #ffe755;}
-            .color4 {fill: #048ac7;}
-            .color5 {fill: #833c9f;}
-            .color6 {fill: #0ac1cd;}
-            .color7 {fill: #e5e5e5;}
-            .color8 {fill: #1c1c1c;}
-            .color9 {fill: #ff005b;}
-            .color10 {fill: #cee318;}
-            .color11 {fill: #ffe755;}
-            .color12 {fill: #048ac7;}
-            .color13 {fill: #833c9f;}
-            .color14 {fill: #0ac1cd;}
-            .color15 {fill: #e5e5e5;}
 
             @keyframes progress-bar-animation {
                 from {
