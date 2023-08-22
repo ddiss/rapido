@@ -1,14 +1,15 @@
 Rapido helps you quickly test Linux kernel changes.
 
-<img src="./docs/termtosvg.svg">
-
 ## Quick Start
 
 ```shell
-# install dracut and qemu
+# install dracut and qemu, then...
 git clone https://github.com/rapido-linux/rapido.git && cd rapido
 ./rapido cut simple-example # boot a throwaway VM using the host kernel
 ```
+
+A demonstration screen-recording can be found [here](docs/demo.svg).
+
 
 ## Setup
 
